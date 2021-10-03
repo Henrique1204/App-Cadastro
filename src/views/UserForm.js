@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, TextInput, Button } from 'react-native';
+
+import { StyleSheet, Alert, SafeAreaView, Text, TextInput, Button } from 'react-native';
+
+import UsersContext, { usersActions } from '../context/usersContext';
 
 const styles = StyleSheet.create({
     form: {
@@ -19,6 +22,16 @@ const styles = StyleSheet.create({
 
 const UserForm = ({ route, navigation }) => {
     const [user, setUser] = React.useState(route.params || {});
+
+    const { dispatch } = React.useContext(UsersContext);
+
+    const validateAlert = (field) => {
+        Alert.alert(
+            'Dados inválidos',
+            `Preencha o campo "${field}" antes de salvar!`,
+            [{ text: 'Ok' }]
+        );
+    };
 
     return (
         <SafeAreaView style={styles.form}>
@@ -49,6 +62,13 @@ const UserForm = ({ route, navigation }) => {
             <Button
                 title='Salvar'
                 onPress={() => {
+                    if (!user.name) return validateAlert('Nome');
+                    if (!user.email) return validateAlert('E-mail');
+                    if (!user.avatar) return validateAlert('URL do Avatar');
+
+                    const type = (user.id) ? usersActions.UPDATE_USER : usersActions.INSERT_USER;
+                    dispatch({ type, payload: user });
+
                     navigation.goBack();
                 }}
             />

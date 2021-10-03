@@ -5,6 +5,8 @@ const UsersContext = React.createContext({});
 
 export const usersActions = {
     DELETE_USER: 'DELETE_USER',
+    INSERT_USER: 'INSERT_USER',
+    UPDATE_USER: 'UPDATE_USER',
 };
 
 const reducer = (state, action) => {
@@ -14,8 +16,20 @@ const reducer = (state, action) => {
         case usersActions.DELETE_USER:
             const usersFilter = state.users.filter(({ id }) => payload.id !== id);
             return { ...state, users: usersFilter };
+        case usersActions.INSERT_USER:
+            const newUser = { id: state.users.length + 1, ...payload };
+
+            return { ...state, users: [ ...state.users, newUser] };
+        case usersActions.UPDATE_USER:
+            const usersClone = [...state.users];
+            const index = usersClone.findIndex(({ id }) => payload.id === id);
+
+            if (index === -1) return { ...state };
+
+            usersClone[index] = payload;
+            return { ...state, users: usersClone };
         default:
-            return state;
+            return { ...state };
     }
 };
 
