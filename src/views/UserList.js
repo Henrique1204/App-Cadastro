@@ -1,12 +1,13 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, FlatList } from 'react-native';
+import { SafeAreaView, FlatList } from 'react-native';
 import { ListItem, Avatar } from 'react-native-elements';
 
 import ButtonsActions from '../Components/ButtonsActions';
-
-import users from '../data/users';
+import UsersContext from '../context/usersContext';
 
 const UserList = ({ navigation }) => {
+    const { state } = React.useContext(UsersContext);
+
     const getUserItem = ({ item: user }) => {
         return (
             <ListItem
@@ -27,13 +28,11 @@ const UserList = ({ navigation }) => {
 
     return (
         <SafeAreaView>
-            <ScrollView>
-                <FlatList
-                    keyExtractor={(user) => user.id.toString()}
-                    data={users}
-                    renderItem={getUserItem}
-                />
-            </ScrollView>
+            <FlatList
+                keyExtractor={(user) => user.id.toString()}
+                data={state.users}
+                renderItem={getUserItem}
+            />
         </SafeAreaView>
     );
 };
