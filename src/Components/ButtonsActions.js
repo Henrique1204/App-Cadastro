@@ -1,8 +1,13 @@
 import React from 'react';
+
 import { Alert } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 
+import UsersContext, { usersActions } from '../context/usersContext';
+
 const ButtonsActions = ({ user, navigate }) => {
+    const { dispatch } = React.useContext(UsersContext);
+
     const confirmUserDeletion = ({ name }) => {
         Alert.alert(
             'Excluir Usuário',
@@ -10,7 +15,12 @@ const ButtonsActions = ({ user, navigate }) => {
             [
                 {
                     text: 'Sim',
-                    onPress: () => console.warn('Usuário excluido!')
+                    onPress: () => {
+                        dispatch({
+                            type: usersActions.DELETE_USER,
+                            payload: user
+                        });
+                    }
                 },
                 { text: 'Não' },
             ]
